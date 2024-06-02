@@ -1,34 +1,61 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 
 namespace OhMySys;
 
 public partial class MainWindow : Window
 {
     private TaskbarIcon _notifyIcon;
-    private bool IsVisible { get; set; }
+    private bool IsWindowVisible { get; set; }
+    private readonly DispatcherTimer _hideTimer;
 
     public MainWindow()
     {
         InitializeComponent();
         CreateTrayIcon();
 
-        this.ShowInTaskbar = false;
+        ShowInTaskbar = false;
 
-        this.Hide();
+        Hide();
 
-        IsVisible = false;
+        IsWindowVisible = false;
 
-        this.Closing += MainWindow_Closing;
+        Closing += MainWindow_Closing;
+        MouseLeave += MainWindow_MouseLeave;
+        MouseEnter += MainWindow_MouseEnter;
+
+        // Initialize the timer
+        _hideTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(2)
+        };
+        _hideTimer.Tick += HideTimer_Tick;
+    }
+
+    private void MainWindow_MouseLeave(object sender, MouseEventArgs e)
+    {
+        _hideTimer.Start();
+    }
+
+    private void MainWindow_MouseEnter(object sender, MouseEventArgs e)
+    {
+        _hideTimer.Stop();
+    }
+
+    private void HideTimer_Tick(object sender, EventArgs e)
+    {
+        HideWindow();
+        _hideTimer.Stop();
     }
 
     private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {
-        // Cancel the event and hide the window
         e.Cancel = true;
-        this.Hide();
+        Hide();
     }
 
     private void CreateTrayIcon()
@@ -46,48 +73,54 @@ public partial class MainWindow : Window
 
     private void NotifyIcon_Click(object sender, EventArgs e)
     {
-        if (!IsVisible)
+        if (!IsWindowVisible)
         {
             ShowWindow();
-            IsVisible = true;
+            IsWindowVisible = true;
         }
         else
         {
             HideWindow();
-            IsVisible = false;
+            IsWindowVisible = false;
         }
     }
 
     private void ShowWindow()
     {
-        // Set the initial position of the window to the bottom of the screen
-        this.Left = SystemParameters.WorkArea.Width - this.Width;
-        this.Top = SystemParameters.WorkArea.Height;
+        Left = SystemParameters.WorkArea.Width - Width;
+        Top = SystemParameters.WorkArea.Height + 1;
 
-        this.Show();
-        this.WindowState = WindowState.Normal;
-        this.Activate();
+        Show();
+        WindowState = WindowState.Normal;
+        Activate();
+        Focus(); // Add this line
 
-        // Create a DoubleAnimation to animate the Top property
         var animation = new DoubleAnimation
         {
-            To = SystemParameters.WorkArea.Height - this.Height, // The final value of the Top property
-            Duration = TimeSpan.FromSeconds(0.5) // The duration of the animation
+            To = SystemParameters.WorkArea.Height - Height + 10,
+            Duration = TimeSpan.FromSeconds(0.5)
         };
 
         // Start the animation
-        this.BeginAnimation(Window.TopProperty, animation);
+        BeginAnimation(Window.TopProperty, animation);
     }
-
     private void HideWindow()
     {
-        this.Hide();
+        var animation = new DoubleAnimation
+        {
+            To = SystemParameters.WorkArea.Height,
+            Duration = TimeSpan.FromSeconds(0.5)
+        };
+
+        animation.Completed += (s, e) => Hide();
+
+        BeginAnimation(Window.TopProperty, animation);
     }
 
-    private void Exit_Click(object sender, EventArgs e)
+    private void Exit_Click(object sender, RoutedEventArgs e)
     {
         _notifyIcon.Dispose();
-        Application.Current.Shutdown();
+        System.Windows.Application.Current.Shutdown();
     }
 
     private void Show_Click(object sender, RoutedEventArgs e)
@@ -99,17 +132,17 @@ public partial class MainWindow : Window
     {
         if (WindowState == WindowState.Minimized)
         {
-            this.Hide();
+            Hide();
         }
         else
         {
-            this.Show();
+            Show();
         }
         base.OnStateChanged(e);
     }
 
     protected override void OnClosed(EventArgs e)
     {
-        this.Hide();
+        Hide();
     }
 }
