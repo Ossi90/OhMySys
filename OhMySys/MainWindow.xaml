@@ -77,7 +77,7 @@
                         <TextBlock
                             Foreground="{Binding ImpactColor}"
                             FontWeight="Bold"
-                            Text="{Binding SystemImpact}"
+                            Text="{Binding Impact}"
                             Width="92"
                             TextAlignment="Right"
                             TextTrimming="CharacterEllipsis"
