@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using OhMySys.Models;
 using OhMySys.Services.CurrentMachineStatus;
+using OhMySys.Services.ProcessService;
 using System.Windows;
 
 namespace OhMySys
@@ -35,6 +36,7 @@ namespace OhMySys
                 ConfigureServices((context, services) =>
                 {
                     services.AddScoped<ICurrentMachineStatusService, CurrentMachineStatusService>();
+                    services.AddScoped<IProcessService, ProcessService>();
 
                     services.AddTransient<MainWindow>();
                     services.AddTransient<MainWindowViewModel>();

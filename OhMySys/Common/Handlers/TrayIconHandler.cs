@@ -24,6 +24,7 @@ namespace OhMySys.Common.Handlers
             {
                 Interval = TimeSpan.FromSeconds(2)
             };
+
             HideTimer.Tick += HideTimer_Tick;
 
             RegisterEventHandlers();
@@ -62,6 +63,7 @@ namespace OhMySys.Common.Handlers
             }
             else
             {
+
                 HideWindow();
                 IsWindowVisible = false;
             }

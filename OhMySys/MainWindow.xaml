@@ -33,47 +33,72 @@
             GlassFrameThickness="0" />
     </WindowChrome.WindowChrome>
 
-    <Grid Background="#FF2D2828">
+    <Grid>
+        <Grid.Background>
+            <SolidColorBrush Color="#FF2D2828" Opacity="10" />
+        </Grid.Background>
+        <TextBlock
+            HorizontalAlignment="Center"
+            Foreground="#FFDADADA"
+            Padding="0,0,0,0"
+            FontSize="15"
+            Margin="0,20,0,538"
+            FontWeight="Bold"
+            RenderTransformOrigin="0.365,1.344"><Run Language="en-gb" Text="Your PC" /></TextBlock>
 
-        <Border Background="#FF252323" CornerRadius="20" Margin="10,10,10,446">
-            <Grid Margin="0,0,0,17" />
-        </Border>
-        <Border Background="#FF252323" CornerRadius="20" Margin="10,166,10,133">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Height="249" VerticalAlignment="Top" Margin="0,47,0,0">
-                <ScrollViewer.Resources>
-                    <Style x:Key="ScrollBarStyle" TargetType="{x:Type ScrollBar}">
-                        <Setter Property="Width" Value="5" />
-                        <Setter Property="Background" Value="Transparent" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ScrollBar}">
-                                    <Grid>
-                                        <Track x:Name="PART_Track" Grid.Column="0">
-                                            <Track.Thumb>
-                                                <Thumb Background="Gray" />
-                                            </Track.Thumb>
-                                        </Track>
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ScrollViewer.Resources>
-                <Border>
-                    <ListBox  av:ItemsSource="{av:SampleData ItemCount=5}" Background="#FF353434" BorderBrush="#FF252323" Width="457" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" Foreground="#FFDADADA" Height="238" SelectionChanged="ListBox_SelectionChanged">
-                        <ListBox.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="10" />
-                            </Style>
-                        </ListBox.Resources>
-                    </ListBox>
-                </Border>
-            </ScrollViewer>
-        </Border>
-        <lvc:Gauge Grid.Row="0" Margin="374,30,26,446"
+        <ListBox
+            ItemsSource="{Binding ActiveApps}"
+            Background="#FF2B2626"
+            Opacity="1"
+            BorderBrush="#211F1F"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ScrollViewer.CanContentScroll="True"
+            Foreground="#FFDADADA"
+            SelectionChanged="ListBox_SelectionChanged"
+            Margin="22,236,24,78" av:ItemsSource="{av:SampleData ItemCount=5}">
+            <ListBox.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="10" />
+                </Style>
+            </ListBox.Resources>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding Icon}" Width="16" Height="16" />
+
+                        <TextBlock
+                            Foreground="#FFDADADA"
+                            FontWeight="Bold"
+                            Text="{Binding Description}"
+                            Width="146"
+                            TextTrimming="CharacterEllipsis"
+                            Margin="5,0" />
+
+                        <TextBlock
+                            Foreground="{Binding ImpactColor}"
+                            FontWeight="Bold"
+                            Text="{Binding SystemImpact}"
+                            Width="92"
+                            TextAlignment="Right"
+                            TextTrimming="CharacterEllipsis"
+                            Margin="5,0" />
+
+                        <TextBlock
+
+                            Foreground="{Binding StatusColor}"
+                            FontWeight="Bold"
+                            Text="{Binding Status}"
+                            Width="141"
+                            TextAlignment="Right"
+                            TextTrimming="CharacterEllipsis"
+                            Margin="5,0" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <lvc:Gauge Grid.Row="0" Margin="256,79,144,397"
                    Uses360Mode="True"
                    HighFontSize="0.1"
-
                    From="0" To="100" Value="{Binding CurrentCpuUsage}" Width="99" Height="124">
             <lvc:Gauge.GaugeRenderTransform>
                 <TransformGroup>
@@ -83,14 +108,14 @@
             </lvc:Gauge.GaugeRenderTransform>
         </lvc:Gauge>
 
-        <lvc:Gauge Grid.Column="0" Margin="256,30,144,0"
+        <lvc:Gauge Grid.Column="0" Margin="374,81,26,0"
             Uses360Mode="True"
             From="0" To="{Binding TotalStorageInGB}" Value="{Binding UsedStorageInGB}"
              HighFontSize="0.1"
              Foreground="#FFDADADA"
             InnerRadius="0" GaugeBackground="#BE2D4356" Height="124" VerticalAlignment="Top" Width="99" />
 
-        <lvc:Gauge Uses360Mode="True" Margin="138,30,262,0"
+        <lvc:Gauge Uses360Mode="True" Margin="139,78,262,0"
                    HighFontSize="0.1"
             From="0" To="{Binding TotalMemoryInGB}" Value="{Binding UsedMemoryInGB}" Foreground="#FFDADADA" Width="99" Height="124" VerticalAlignment="Top" />
 
@@ -100,7 +125,7 @@
             NeedleFill="#FFDADADA"
             FontSize="0.1"
             SectionsInnerRadius=".5"
-            Margin="23,30,378,0"
+            Margin="22,79,379,0"
             Foreground="#FFDADADA" Height="124" VerticalAlignment="Top" Width="99">
             <lvc:AngularGauge.Sections>
                 <lvc:AngularSection FromValue="0" ToValue="65" Fill="#2596be" />
@@ -110,11 +135,13 @@
         </lvc:AngularGauge>
 
         <TextBlock Foreground="#FFDADADA" Padding="0,0,0,0" Margin="57,122,412,462" ><Run Text="{Binding CpuTemperatureText}" /><LineBreak /></TextBlock>
-        <TextBlock Foreground="#FFDADADA" Padding="0,0,0,0" Margin="164,20,0,564" FontWeight="Bold" HorizontalAlignment="Left"><Run Text="Memory" /><LineBreak /></TextBlock>
-        <TextBlock Foreground="#FFDADADA" Padding="0,0,0,0" Margin="411,20,63,564" FontWeight="Bold" RenderTransformOrigin="0.365,1.344"><Run Language="en-gb" Text="CPU" /></TextBlock>
-        <TextBlock Foreground="#FFDADADA" Padding="0,0,0,0" Margin="57,20,0,564" FontWeight="Bold" HorizontalAlignment="Left"><Run Language="en-gb" Text="Temp" /></TextBlock>
-        <TextBlock Foreground="#FFDADADA" Padding="0,0,0,0" Margin="282,20,170,564" FontWeight="Bold"><Run Language="is-is" Text="Storage" /></TextBlock>
-        <TextBlock Foreground="#FFDADADA" Padding="0,0,0,0" Margin="45,186,326,398" FontWeight="Bold"><Run Language="en-gb" Text="Runnin" /><Run Text=" Applications" /></TextBlock>
+        <TextBlock Foreground="#FFDADADA" Padding="0,0,0,0" Margin="164,65,0,519" FontWeight="Bold" HorizontalAlignment="Left"><Run Text="Memory" /><LineBreak /></TextBlock>
+        <TextBlock Foreground="#FFDADADA" Padding="0,0,0,0" Margin="293,65,181,519" FontWeight="Bold" RenderTransformOrigin="0.365,1.344"><Run Language="en-gb" Text="CPU" /></TextBlock>
+        <TextBlock Foreground="#FFDADADA" Padding="0,0,0,0" Margin="57,63,0,521" FontWeight="Bold" HorizontalAlignment="Left"><Run Language="en-gb" Text="Temp" /></TextBlock>
+        <TextBlock Foreground="#FFDADADA" Padding="0,0,0,0" Margin="400,65,52,519" FontWeight="Bold"><Run Language="is-is" Text="Storage" /></TextBlock>
+        <TextBlock Foreground="#FFDADADA" Padding="0,0,0,0" Margin="44,208,412,370" FontWeight="Bold"><Run Language="en-gb" Text="Apps" /></TextBlock>
         <Button Content="Clean System" Width="104" Height="41" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" VerticalAlignment="Top" Background="#FF2B2B2B" Margin="372,536,0,0" Click="Button_Click_1" />
+        <TextBlock Foreground="#FFDADADA" Padding="0,0,0,0" Margin="234,208,214,370" FontWeight="Bold"><Run Language="en-gb" Text="Impact" /></TextBlock>
+        <TextBlock Foreground="#FFDADADA" Padding="0,0,0,0" Margin="400,208,52,370" FontWeight="Bold"><Run Language="en-gb" Text="Status" /></TextBlock>
     </Grid>
 </Window>

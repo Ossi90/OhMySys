@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualBasic.Devices;
 using OpenHardwareMonitor.Hardware;
-using System.Diagnostics;
 using System.IO;
 using System.Management;
 
@@ -31,9 +30,7 @@ public class CurrentMachineStatusService : ICurrentMachineStatusService
         var searcher = new ManagementObjectSearcher("select * from Win32_Processor");
         var queryCollection = searcher.Get();
 
-        var cpuUsage = queryCollection.Cast<ManagementObject>().Average(mo => Convert.ToDouble(mo["LoadPercentage"]));
-
-        return cpuUsage;
+        return queryCollection.Cast<ManagementObject>().Average(mo => Convert.ToDouble(mo["LoadPercentage"]));
     }
 
     public double GetTotalStorageInGB()

@@ -10,6 +10,7 @@ public partial class MainWindow : Window
 
     public MainWindow()
     {
+        //TODO make sure time is disposed everytime the application goes down
         ViewModel = App.GetService<MainWindowViewModel>();
 
         InitializeComponent();
@@ -29,6 +30,8 @@ public partial class MainWindow : Window
 
     private void Exit_Click(object sender, RoutedEventArgs e)
     {
+        ViewModel.Dispose();
+
         Application.Current.Shutdown();
     }
 
